@@ -1,0 +1,10 @@
+__pycache__/
+*.pyc
+.env
+.venv/
+venv/
+
+storage/uploads/*
+!storage/uploads/.gitkeep
+
+alembic_version_cache.txt
