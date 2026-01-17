@@ -1,9 +1,25 @@
-# Placeholder: production should use Resend/SendGrid/Mailgun.
-# For now we just log to console so the flow is complete.
+import httpx
+from .settings import settings
 
-def send_email(to: str, subject: str, body: str) -> None:
-    print("=== EMAIL (stub) ===")
-    print("TO:", to)
-    print("SUBJECT:", subject)
-    print("BODY:", body)
-    print("====================")
+RESEND_API = "https://api.resend.com/emails"
+
+async def send_email(subject: str, html: str) -> None:
+    headers = {
+        "Authorization": f"Bearer {settings.RESEND_API_KEY}",
+        "Content-Type": "application/json",
+    }
+
+    # Resend requires a verified "from" domain/address in your Resend account.
+    # Replace this once you set it up, e.g. "BlueWave Digital <no-reply@yourdomain.com>"
+    from_email = "onboarding@resend.dev"
+
+    payload = {
+        "from": from_email,
+        "to": [settings.NOTIFY_EMAIL_TO],
+        "subject": subject,
+        "html": html,
+    }
+
+    async with httpx.AsyncClient(timeout=15) as client:
+        r = await client.post(RESEND_API, headers=headers, json=payload)
+        r.raise_for_status()
