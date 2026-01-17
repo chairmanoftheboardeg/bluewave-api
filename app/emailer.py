@@ -1,5 +1,5 @@
 import httpx
-from .settings import settings
+from app.settings import settings
 
 RESEND_API = "https://api.resend.com/emails"
 
@@ -9,8 +9,6 @@ async def send_email(subject: str, html: str) -> None:
         "Content-Type": "application/json",
     }
 
-    # Resend requires a verified "from" domain/address in your Resend account.
-    # Replace this once you set it up, e.g. "BlueWave Digital <no-reply@yourdomain.com>"
     from_email = "onboarding@resend.dev"
 
     payload = {
