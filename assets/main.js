@@ -8,20 +8,15 @@
     });
   }
 
-  // Set active link based on pathname
   const path = (location.pathname || '').toLowerCase();
-  const markActive = (selector) => {
-    document.querySelectorAll(selector).forEach(a => {
-      const href = (a.getAttribute('href') || '').toLowerCase();
-      if(!href) return;
-      const isHome = (href === 'index.html' || href === '/' || href === './' || href === './index.html');
-      const onHome = (path.endsWith('/') || path.endsWith('/index.html') || path === '' || path.endsWith('index.html'));
-      const match =
-        (isHome && onHome) ||
-        (!isHome && path.endsWith(href));
-      if(match) a.classList.add('active');
-    });
-  };
-  markActive('.nav-links a');
-  markActive('.mobile-menu a');
+  const normalize = (href) => (href || '').toLowerCase().replace(/\/+$/, '');
+  const isHomePath = () => (path === '' || path.endsWith('/') || path.endsWith('/index.html'));
+
+  document.querySelectorAll('a[data-nav]').forEach(a => {
+    const href = normalize(a.getAttribute('href'));
+    const onHome = isHomePath();
+    const isHomeLink = href === '' || href === '/' || href.endsWith('/index.html');
+    const match = (isHomeLink && onHome) || (!isHomeLink && path.endsWith(href));
+    if(match) a.classList.add('active');
+  });
 })();
